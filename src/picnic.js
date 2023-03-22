@@ -1,3 +1,5 @@
+const pluralize = require('pluralize')
+
 class Picnic {
   attendees = []
   items = []
@@ -23,7 +25,11 @@ ${this.items
   [${item.isEnough ? 'x' : ' '}] ${item.name} (${item.quantity}/${item.desiredQuantity})
     ${item.whoIsBringingWhat
       .map(
-        whoIsBringingWhat => `- ${whoIsBringingWhat.user.name} brings ${whoIsBringingWhat.quantity} ${item.name}.
+        whoIsBringingWhat => `- ${whoIsBringingWhat.user.name} brings ${pluralize(
+          item.name,
+          whoIsBringingWhat.quantity,
+          true
+        )}.
     `
       )
       .join('')}`
