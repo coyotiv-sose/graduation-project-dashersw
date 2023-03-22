@@ -19,5 +19,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "pluralize": "^8.0.0"
   }
 }
