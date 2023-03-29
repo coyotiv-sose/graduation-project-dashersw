@@ -9,7 +9,7 @@ class User {
   }
 
   createPicnic(name, location, date) {
-    const picnic = new Picnic(name, location, date)
+    const picnic = Picnic.create({ name, location, date })
 
     this.joinPicnic(picnic)
 
@@ -69,6 +69,15 @@ ${picnic.items
   .join('')}
     `
   }
+
+  static create({ name }) {
+    const newUser = new User(name)
+
+    User.list.push(newUser)
+    return newUser
+  }
+
+  static list = []
 }
 
 module.exports = User

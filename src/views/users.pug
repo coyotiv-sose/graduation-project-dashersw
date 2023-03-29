@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 Picnigram users list
+  p Welcome, #{user.name}
+
+  h2 Users
+  ul#users
+    each user in users
+      li.user= user.name

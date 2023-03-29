@@ -41,6 +41,16 @@ ${this.items
   set details(newDetails) {
     throw new Error('You cannot edit the details of a picnic directly.')
   }
+
+  static create({ name, location, date }) {
+    const picnic = new Picnic(name, location, date)
+
+    Picnic.list.push(picnic)
+
+    return picnic
+  }
+
+  static list = []
 }
 
 module.exports = Picnic
