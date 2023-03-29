@@ -18,50 +18,40 @@ console.log('Picnigram is a social network for making picnics fun again!')
 
 // fetch users with axios
 
-// axios.get('http://localhost:53660/users').then(response => {
+// axios.get('http://localhost:4000/users').then(response => {
 //   console.log(response.data)
 // })
 
 // create a user with axios
 
 async function main() {
-  await axios.post('http://localhost:53660/users', {
+  await axios.post('http://localhost:4000/users', {
     name: 'Armagan',
     hacked: true,
   })
 
-  await axios.post('http://localhost:53660/users', {
+  await axios.post('http://localhost:4000/users', {
     name: 'Numan',
   })
 
-  const allUsers = await axios.get('http://localhost:53660/users')
-
-  const armagansPicnic = await axios.post('http://localhost:53660/users/Armagan/picnics', {
+  await axios.post('http://localhost:4000/users/Armagan/picnics', {
     name: 'ArmaganBirthdayPicnic',
     location: 'Tempelhofer Feld',
     date: '2023-05-01',
   })
 
-  // console.log('List of all users', allUsers.data)
-
-  console.log(armagansPicnic.data)
-
-  const numansPicnic = await axios.post('http://localhost:53660/users/Numan/picnics', {
+  await axios.post('http://localhost:4000/users/Numan/picnics', {
     name: "Numan's Counter-Picnic",
     location: 'Hasenheide',
     date: '2023-05-02',
   })
 
-  console.log(numansPicnic.data)
+  await axios.post('http://localhost:4000/users/Armagan/picnics/ArmaganBirthdayPicnic/attendees', {
+    name: 'Numan',
+  })
 
-  const numanJoinsArmagansPicnic = await axios.post(
-    'http://localhost:53660/users/Armagan/picnics/ArmaganBirthdayPicnic/attendees',
-    {
-      name: 'Numan',
-    }
-  )
-
-  console.log(numanJoinsArmagansPicnic.data)
+  const allUsers = await axios.get('http://localhost:4000/users')
+  console.log('List of all users', allUsers.data)
 }
 
 main()
