@@ -19,11 +19,7 @@ router.post('/', function (req, res, next) {
 router.post('/:userId/picnics', function (req, res, next) {
   const user = User.list.find(user => user.name === req.params.userId)
 
-  const picnic = user.createPicnic({
-    name: req.body.name,
-    location: req.body.location,
-    date: req.body.date,
-  })
+  const picnic = user.createPicnic(req.body.name, req.body.location, req.body.date)
 
   res.send({ name: picnic.name, location: picnic.location, date: picnic.date })
 })
