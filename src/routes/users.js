@@ -27,7 +27,7 @@ router.post('/:userId/picnics', function (req, res, next) {
 // join a picnic
 router.post('/:userId/picnics/:picnicId/attendees', function (req, res, next) {
   try {
-    const user = User.list.find(user => user.name === req.params.userId)
+    const user = User.list.find(user => user.name === req.body.name)
     const picnic = Picnic.list.find(picnic => picnic.name === req.params.picnicId)
 
     user.joinPicnic(picnic)
