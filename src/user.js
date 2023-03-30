@@ -21,7 +21,7 @@ class User {
     this.picnics.push(picnic)
   }
 
-  bringItem(name, quantity, picnic) {
+  bringItem(name, quantity, picnic, desiredQuantity = quantity) {
     let item = picnic.items.find(item => item.name === name)
 
     if (!item) {
@@ -29,10 +29,18 @@ class User {
       picnic.items.push(item)
     }
 
-    item.whoIsBringingWhat.push({
-      user: this,
-      quantity: quantity,
-    })
+    let userAlreadyBringingItem = item.whoIsBringingWhat.find(whoIsBringingWhat => whoIsBringingWhat.user === this)
+
+    if (!userAlreadyBringingItem) {
+      userAlreadyBringingItem = {
+        user: this,
+      }
+
+      item.whoIsBringingWhat.push(userAlreadyBringingItem)
+    }
+
+    userAlreadyBringingItem.quantity = quantity
+    item.desiredQuantity = desiredQuantity
   }
 
   leavePicnic(picnic) {
