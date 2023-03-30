@@ -18,39 +18,39 @@ console.log('Picnigram is a social network for making picnics fun again!')
 
 // fetch users with axios
 
-// axios.get('http://localhost:4000/users').then(response => {
+// axios.get('http://localhost:3000/users').then(response => {
 //   console.log(response.data)
 // })
 
 // create a user with axios
 
 async function main() {
-  await axios.post('http://localhost:4000/users', {
+  await axios.post('http://localhost:3000/users', {
     name: 'Armagan',
     hacked: true,
   })
 
-  await axios.post('http://localhost:4000/users', {
+  await axios.post('http://localhost:3000/users', {
     name: 'Numan',
   })
 
-  await axios.post('http://localhost:4000/users/Armagan/picnics', {
+  await axios.post('http://localhost:3000/users/Armagan/picnics', {
     name: 'ArmaganBirthdayPicnic',
     location: 'Tempelhofer Feld',
     date: '2023-05-01',
   })
 
-  await axios.post('http://localhost:4000/users/Numan/picnics', {
+  await axios.post('http://localhost:3000/users/Numan/picnics', {
     name: "Numan's Counter-Picnic",
     location: 'Hasenheide',
     date: '2023-05-02',
   })
 
-  await axios.post('http://localhost:4000/users/Armagan/picnics/ArmaganBirthdayPicnic/attendees', {
+  await axios.post('http://localhost:3000/users/Armagan/picnics/ArmaganBirthdayPicnic/attendees', {
     name: 'Numan',
   })
 
-  const allUsers = await axios.get('http://localhost:4000/users')
+  const allUsers = await axios.get('http://localhost:3000/users')
   console.log('List of all users', allUsers.data)
 }
 
