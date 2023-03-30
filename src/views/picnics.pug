@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1 Picnics
+  p Welcome to the picnic page!
+  p Here you can see all the picnics that have been created by users.
+
+  ul
+    each picnic in picnics
+      li
+        a(href="/picnics/" + picnic.name)= picnic.name
+        p
+        | at #{picnic.location}
+        | on #{picnic.date}
+        p #{picnic.attendees.length} people are attending
