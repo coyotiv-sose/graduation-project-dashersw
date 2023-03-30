@@ -15,4 +15,9 @@ block content
   p These items are needed for the picnic:
   ul
     each item in picnic.items
-      li= item.name
+      li
+        input(type="checkbox", checked=item.isEnough)
+        | #{item.name} (#{item.quantity}/#{item.desiredQuantity})
+        ul
+          each whoIsBringingWhat in item.whoIsBringingWhat
+            li #{whoIsBringingWhat.user.name} is bringing #{pluralize(item.name, whoIsBringingWhat.quantity, true)}
