@@ -1,5 +1,6 @@
 var express = require('express')
 const Picnic = require('../picnic')
+const User = require('../user')
 var router = express.Router()
 
 /* GET picnics listing. */
@@ -48,6 +49,39 @@ router.get('/:name', function (req, res, next) {
   res.render('picnic-detail', {
     picnic,
   })
+})
+
+// create a picnic for a user
+router.post('/', function (req, res, next) {
+  const user = User.list.find(user => user.name === req.body.user)
+
+  const picnic = user.createPicnic(req.body.name, req.body.location, req.body.date)
+
+  res.send({ name: picnic.name, location: picnic.location, date: picnic.date })
+})
+
+// join a picnic
+router.post('/:picnicId/attendees', function (req, res, next) {
+  const user = User.list.find(user => user.name === req.body.name)
+  const picnic = Picnic.list.find(picnic => picnic.name === req.params.picnicId)
+
+  user.joinPicnic(picnic)
+
+  res.send({
+    name: picnic.name,
+    location: picnic.location,
+    date: picnic.date,
+    attendees: picnic.attendees.map(attendee => attendee.name),
+  })
+})
+
+router.put('/:picnicId/items', function (req, res, next) {
+  const user = User.list.find(user => user.name === req.body.user)
+  const picnic = Picnic.list.find(picnic => picnic.name === req.params.picnicId)
+
+  user.bringItem(req.body.name, req.body.quantity, picnic, req.body.desiredQuantity)
+
+  res.sendStatus(200)
 })
 
 module.exports = router
