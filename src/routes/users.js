@@ -1,6 +1,5 @@
 var express = require('express')
-const Picnic = require('../picnic')
-const User = require('../user')
+const User = require('../models/user')
 var router = express.Router()
 
 /* GET users listing. */
