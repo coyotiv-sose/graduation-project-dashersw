@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h2= picnic.name
+
+  p
+  | at #{picnic.location}
+  | on #{picnic.date}
+  p #{picnic.attendees.length} people are attending
+
+  ul
+    each attendee in picnic.attendees
+      li= attendee.name
+
+  p These items are needed for the picnic:
+  ul
+    each item in picnic.items
+      li= item.name
