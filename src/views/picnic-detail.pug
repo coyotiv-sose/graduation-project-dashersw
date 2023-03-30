@@ -1,18 +1,17 @@
 extends layout
 
 block content
-  h2= picnic.name
+  h2 Picnic #{picnic.name}
 
-  p
-  | at #{picnic.location}
-  | on #{picnic.date}
-  p #{picnic.attendees.length} people are attending
+  h3 at #{picnic.location} on #{picnic.date}
+
+  p #{picnic.attendees.length} people are attending:
 
   ul
     each attendee in picnic.attendees
       li= attendee.name
 
-  p These items are needed for the picnic:
+  p They will bring the following items:
   ul
     each item in picnic.items
       li
@@ -20,4 +19,4 @@ block content
         | #{item.name} (#{item.quantity}/#{item.desiredQuantity})
         ul
           each whoIsBringingWhat in item.whoIsBringingWhat
-            li #{whoIsBringingWhat.user.name} is bringing #{pluralize(item.name, whoIsBringingWhat.quantity, true)}
+            li #{whoIsBringingWhat.user.name} is bringing #{pluralize(item.name, whoIsBringingWhat.quantity, true)}.
