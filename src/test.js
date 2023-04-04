@@ -1,5 +1,6 @@
 const axios = require('axios')
-
+const User = require('./models/user')
+const Picnic = require('./models/picnic')
 axios.defaults.baseURL = 'http://localhost:3000'
 
 console.log('Picnigram is a social network for making picnics fun again!')
@@ -17,6 +18,9 @@ console.log('Picnigram is a social network for making picnics fun again!')
 // Users should also be able to edit their Picnic list of items to bring.
 
 async function main() {
+  await User.deleteMany()
+  await Picnic.deleteMany()
+
   const armagan = await axios.post('/users', {
     name: 'Armagan',
   })
