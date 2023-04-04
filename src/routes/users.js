@@ -3,13 +3,13 @@ const User = require('../models/user')
 var router = express.Router()
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send(User.list.map(user => ({ name: user.name, picnics: user.picnics.map(picnic => picnic.name) })))
+router.get('/', async function (req, res, next) {
+  res.send(await User.find())
 })
 
 /* Create a new user. */
-router.post('/', function (req, res, next) {
-  const user = User.create({ name: req.body.name })
+router.post('/', async function (req, res, next) {
+  const user = await User.create({ name: req.body.name })
 
   res.send(user)
 })

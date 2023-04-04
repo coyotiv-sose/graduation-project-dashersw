@@ -1,15 +1,28 @@
 const pluralize = require('pluralize')
+const mongoose = require('mongoose')
+const autopopulate = require('mongoose-autopopulate')
+
+const itemSchema = require('./item')
+
+const picnicSchema = new mongoose.Schema({
+  name: String,
+  location: String,
+  date: String,
+  attendees: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      autopopulate: {
+        maxDepth: 1,
+      },
+    },
+  ],
+  items: [itemSchema],
+})
+
+picnicSchema.plugin(autopopulate)
 
 class Picnic {
-  attendees = []
-  items = []
-
-  constructor(name, location, date) {
-    this.name = name
-    this.location = location
-    this.date = date
-  }
-
   get details() {
     return `
 # Picnic ${this.name}
@@ -41,16 +54,8 @@ ${this.items
   set details(newDetails) {
     throw new Error('You cannot edit the details of a picnic directly.')
   }
-
-  static create({ name, location, date }) {
-    const picnic = new Picnic(name, location, date)
-
-    Picnic.list.push(picnic)
-
-    return picnic
-  }
-
-  static list = []
 }
 
-module.exports = Picnic
+picnicSchema.loadClass(Picnic)
+
+module.exports = mongoose.model('Picnic', picnicSchema)

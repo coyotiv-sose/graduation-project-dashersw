@@ -8,7 +8,7 @@ block content
   ul
     each picnic in picnics
       li
-        a(href="/picnics/" + picnic.name)= picnic.name
+        a(href="/picnics/" + picnic._id)= picnic.name
         p
         | at #{picnic.location}
         | on #{picnic.date}

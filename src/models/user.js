@@ -1,46 +1,77 @@
 const Picnic = require('./picnic')
 const Item = require('./item')
+const mongoose = require('mongoose')
+const autopopulate = require('mongoose-autopopulate')
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  picnics: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Picnic',
+      autopopulate: {
+        maxDepth: 1,
+      },
+    },
+  ],
+})
+
+userSchema.plugin(autopopulate)
 
 class User {
-  picnics = []
+  async createPicnic(name, location, date) {
+    const picnic = await Picnic.create({ name, location, date })
 
-  constructor(name) {
-    this.name = name
-  }
-
-  createPicnic(name, location, date) {
-    const picnic = Picnic.create({ name, location, date })
-
-    this.joinPicnic(picnic)
+    await this.joinPicnic(picnic)
 
     return picnic
   }
 
-  joinPicnic(picnic) {
+  async joinPicnic(picnic) {
     picnic.attendees.push(this)
     this.picnics.push(picnic)
+
+    await picnic.save()
+    await this.save()
   }
 
-  bringItem(name, quantity, picnic, desiredQuantity = quantity) {
+  async bringItem(name, quantity, picnic, desiredQuantity = quantity) {
     let item = picnic.items.find(item => item.name === name)
 
+    let newItem = false
+
     if (!item) {
-      item = new Item(name, quantity)
-      picnic.items.push(item)
+      item = { name, quantity, whoIsBringingWhat: [], desiredQuantity: 1 }
+
+      newItem = true
     }
 
-    let userAlreadyBringingItem = item.whoIsBringingWhat.find(whoIsBringingWhat => whoIsBringingWhat.user === this)
+    let userAlreadyBringingItem = item.whoIsBringingWhat.find(
+      whoIsBringingWhat => whoIsBringingWhat.user.name === this.name
+    )
+
+    let newUser = false
 
     if (!userAlreadyBringingItem) {
       userAlreadyBringingItem = {
-        user: this,
+        user: {
+          name: this.name,
+          _id: this._id,
+        },
+        quantity: quantity,
       }
 
-      item.whoIsBringingWhat.push(userAlreadyBringingItem)
+      newUser = true
     }
 
     userAlreadyBringingItem.quantity = quantity
+
+    if (newUser) item.whoIsBringingWhat.push(userAlreadyBringingItem)
+
     item.desiredQuantity = desiredQuantity
+
+    if (newItem) picnic.items.push(item)
+    await picnic.save()
   }
 
   leavePicnic(picnic) {
@@ -77,15 +108,8 @@ ${picnic.items
   .join('')}
     `
   }
-
-  static create({ name }) {
-    const newUser = new User(name)
-
-    User.list.push(newUser)
-    return newUser
-  }
-
-  static list = []
 }
 
-module.exports = User
+userSchema.loadClass(User)
+
+module.exports = mongoose.model('User', userSchema)
