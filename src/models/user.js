@@ -4,14 +4,15 @@ const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 
 const userSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
   picnics: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Picnic',
-      autopopulate: {
-        maxDepth: 1,
-      },
+      autopopulate: false,
     },
   ],
 })
@@ -46,8 +47,8 @@ class User {
       newItem = true
     }
 
-    let userAlreadyBringingItem = item.whoIsBringingWhat.find(
-      whoIsBringingWhat => whoIsBringingWhat.user.name === this.name
+    let userAlreadyBringingItem = item.whoIsBringingWhat.find(whoIsBringingWhat =>
+      whoIsBringingWhat.user._id.equals(this._id)
     )
 
     let newUser = false
@@ -58,13 +59,13 @@ class User {
           name: this.name,
           _id: this._id,
         },
-        quantity: quantity,
+        quantity: 0,
       }
 
       newUser = true
     }
 
-    userAlreadyBringingItem.quantity = quantity
+    userAlreadyBringingItem.quantity += quantity
 
     if (newUser) item.whoIsBringingWhat.push(userAlreadyBringingItem)
 
@@ -74,40 +75,43 @@ class User {
     await picnic.save()
   }
 
-  leavePicnic(picnic) {
-    picnic.attendees = picnic.attendees.filter(attendee => attendee !== this)
-    this.picnics = this.picnics.filter(p => p !== picnic)
+  async leavePicnic(picnic) {
+    picnic.attendees.pull(this)
+    this.picnics.pull(picnic)
 
     picnic.items.forEach(item => {
-      item.whoIsBringingWhat = item.whoIsBringingWhat.filter(whoIsBringingWhat => whoIsBringingWhat.user !== this)
+      item.whoIsBringingWhat.pull({ user: this._id })
     })
+
+    await picnic.save()
+    await this.save()
   }
 
-  get profile() {
-    return `
-# ${this.name}
+  //   get profile() {
+  //     return `
+  // # ${this.name}
 
-${this.picnics.length} picnics:
-${this.picnics
-  .map(
-    picnic => `
-- ${picnic.name} at ${picnic.location} on ${picnic.date}
+  // ${this.picnics.length} picnics:
+  // ${this.picnics
+  //   .map(
+  //     picnic => `
+  // - ${picnic.name} at ${picnic.location} on ${picnic.date}
 
-${this.name} will bring the following items:
-${picnic.items
-  .filter(picnicItem => picnicItem.whoIsBringingWhat.find(whoIsBringingWhat => whoIsBringingWhat.user === this))
-  .map(
-    item =>
-      `${item.name} (${item.whoIsBringingWhat.find(whoIsBringingWhat => whoIsBringingWhat.user === this).quantity}/${
-        item.desiredQuantity
-      })`
-  )
-  .join(', ')}
-`
-  )
-  .join('')}
-    `
-  }
+  // ${this.name} will bring the following items:
+  // ${picnic.items
+  //   .filter(picnicItem => picnicItem.whoIsBringingWhat.find(whoIsBringingWhat => whoIsBringingWhat.user === this))
+  //   .map(
+  //     item =>
+  //       `${item.name} (${item.whoIsBringingWhat.find(whoIsBringingWhat => whoIsBringingWhat.user === this).quantity}/${
+  //         item.desiredQuantity
+  //       })`
+  //   )
+  //   .join(', ')}
+  // `
+  //   )
+  //   .join('')}
+  //     `
+  //   }
 }
 
 userSchema.loadClass(User)
