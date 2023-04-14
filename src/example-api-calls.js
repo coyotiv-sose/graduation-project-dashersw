@@ -3,6 +3,9 @@ const User = require('./models/user')
 const Picnic = require('./models/picnic')
 axios.defaults.baseURL = 'http://localhost:3000'
 
+require('dotenv').config()
+require('./database-connection')
+
 console.log('Picnigram is a social network for making picnics fun again!')
 
 // I need two main objects, Users and Picnics, and Users can create Picnics and other Users can join them
@@ -78,6 +81,24 @@ async function main() {
 
   const allUsers = await axios.get('/users')
   console.log('List of all users', allUsers.data)
+
+  console.log(
+    `The last picnic should have two wines`,
+    allUsers.data[1].picnics[0].items[2].name == 'wine',
+    allUsers.data[1].picnics[0].items[2].quantity == 2
+  )
+
+  console.log(
+    `The last picnic should have one tent`,
+    allUsers.data[1].picnics[0].items[1].name == 'tent',
+    allUsers.data[1].picnics[0].items[1].quantity == 1
+  )
+
+  console.log(
+    `The last picnic should have 9 beers`,
+    allUsers.data[1].picnics[0].items[0].name == 'beer',
+    allUsers.data[1].picnics[0].items[0].quantity == 9
+  )
 }
 
 main().catch(error => {
