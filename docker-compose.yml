@@ -2,16 +2,29 @@ services:
   api:
     image: picnigram-api
     build:
-      context: .
+      context: backend
       dockerfile: Dockerfile
     depends_on:
       - mongodb
     ports:
       - 3000:3000
     volumes:
-      - ./src:/app/src
+      - ./backend/src:/app/src
+    env_file:
+      - backend/.env
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://mongodb:27017/picnigram
+
+  frontend:
+    image: picnigram-frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
 
   mongodb:
     image: mongo
