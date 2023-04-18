@@ -16,6 +16,7 @@ import HelloWorld from './components/HelloWorld.vue'
       </nav>
     </div>
   </header>
+  <h1>Picnigram</h1>
   <Suspense>
     <RouterView />
   </Suspense>
