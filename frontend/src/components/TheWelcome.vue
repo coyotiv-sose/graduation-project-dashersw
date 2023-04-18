@@ -5,9 +5,19 @@ import ToolingIcon from './icons/IconTooling.vue'
 import EcosystemIcon from './icons/IconEcosystem.vue'
 import CommunityIcon from './icons/IconCommunity.vue'
 import SupportIcon from './icons/IconSupport.vue'
+
+import axios from 'axios'
+
+const { data: picnics } = await axios.get('http://localhost:61979/picnics')
 </script>
 
 <template>
+  <h1>Picnics</h1>
+  <ul>
+    <li v-for="picnic in picnics" :key="picnic.id">
+      {{ picnic.name }} at {{ picnic.location }} on {{ picnic.date }}
+    </li>
+  </ul>
   <WelcomeItem>
     <template #icon>
       <DocumentationIcon />

@@ -6,6 +6,7 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const pluralize = require('pluralize')
+const cors = require('cors')
 
 require('./database-connection')
 
@@ -13,6 +14,8 @@ const usersRouter = require('./routes/users')
 const picnicsRouter = require('./routes/picnics')
 
 const app = express()
+
+app.use(cors())
 
 app.locals.pluralize = pluralize
 
