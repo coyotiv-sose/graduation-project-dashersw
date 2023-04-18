@@ -8,7 +8,7 @@ import SupportIcon from './icons/IconSupport.vue'
 
 import axios from 'axios'
 
-const { data: picnics } = await axios.get('http://localhost:61979/picnics')
+const { data: picnics } = await axios.get('http://localhost:3000/picnics')
 </script>
 
 <template>
