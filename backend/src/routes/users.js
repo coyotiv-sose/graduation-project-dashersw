@@ -4,7 +4,7 @@ var router = express.Router()
 
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
-  res.send(await User.find())
+  res.send(await User.find().populate('picnics'))
 })
 
 router.get('/:id', async function (req, res, next) {
