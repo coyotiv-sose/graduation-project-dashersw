@@ -30,7 +30,12 @@ passport.deserializeUser(User.deserializeUser())
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+)
 
 app.locals.pluralize = pluralize
 
