@@ -3,6 +3,8 @@ import axios from 'axios'
 import CounterOptionsApi from '../components/CounterOptionsApi.vue'
 import PicnicItem from '../components/PicnicItem.vue'
 import User from '../components/User.vue'
+import { mapState } from 'pinia'
+import { useAccountStore } from '../stores/account'
 
 export default {
   name: 'PicnicDetail',
@@ -21,17 +23,20 @@ export default {
       `http://localhost:3000/picnics/${this.$route.params.id}`
     )
     this.picnic = picnic
+  },
+  computed: {
+    ...mapState(useAccountStore, ['user'])
   }
 }
 </script>
 
 <template lang="pug">
-CounterOptionsApi(name="counter1Name")
-CounterOptionsApi(name="counter2Name")
 div(v-if="!picnic")
   p Loading...
 div(v-else)
-  h2 Picnic {{picnic.name}}
+  h2 {{picnic.name}}
+  p(v-if="user && user._id == picnic?.attendees?.[0]?._id")
+    RouterLink(to="/picnics/:id/edit") Edit picnic
 
   h3 at {{picnic.location}} on {{picnic.date}}
 
