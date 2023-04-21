@@ -17,12 +17,11 @@ router.get('/:id', async function (req, res, next) {
 
 /* Create a new user. */
 router.post('/', async function (req, res, next) {
-  try {
-    const user = await User.create({ name: req.body.name })
-    res.send(user)
-  } catch (e) {
-    next(e)
-  }
+  const { name, email, password } = req.body
+
+  const user = await User.register({ name, email }, password)
+
+  res.send(user)
 })
 
 module.exports = router

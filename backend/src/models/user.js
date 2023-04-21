@@ -2,6 +2,7 @@ const Picnic = require('./picnic')
 const Item = require('./item')
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
+const passportLocalMongoose = require('passport-local-mongoose')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -18,6 +19,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.plugin(autopopulate)
+userSchema.plugin(passportLocalMongoose, { usernameField: 'email' })
 
 class User {
   async createPicnic(name, location, date) {
