@@ -26,10 +26,14 @@ async function main() {
 
   const armagan = await axios.post('/users', {
     name: 'Armagan',
+    email: 'armagan@coyotiv.com',
+    password: '123456~',
   })
 
   const numan = await axios.post('/users', {
     name: 'Numan',
+    email: 'numan@coyotiv.com',
+    password: '123456~',
   })
 
   const armagansBirthdayPicnic = await axios.post('/picnics', {
