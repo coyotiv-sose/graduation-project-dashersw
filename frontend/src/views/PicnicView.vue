@@ -40,6 +40,10 @@ div(v-else)
 
   h3 at {{picnic.location}} on {{picnic.date}}
 
+  p This picnic is hosted by: {{ picnic.attendees[0].name }}
+
+  p {{ picnic.description }}
+
   p {{picnic.attendees.length}} people are attending:
 
   ul

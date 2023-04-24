@@ -2,6 +2,7 @@ var express = require('express')
 const Picnic = require('../models/picnic')
 const User = require('../models/user')
 var router = express.Router()
+const generateDescription = require('../lib/description-generator')
 
 /* GET picnics listing. */
 router.get('/', async function (req, res, next) {
@@ -23,7 +24,13 @@ router.get('/:id', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
   const user = await User.findById(req.body.user)
 
-  const picnic = await user.createPicnic(req.body.name, req.body.location, req.body.date)
+  const description = await generateDescription({
+    name: req.body.name,
+    location: req.body.location,
+    date: req.body.date,
+  })
+
+  const picnic = await user.createPicnic(req.body.name, req.body.location, req.body.date, description)
 
   res.send(picnic)
 })

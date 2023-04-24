@@ -8,6 +8,7 @@ const picnicSchema = new mongoose.Schema({
   name: String,
   location: String,
   date: String,
+  description: String,
   attendees: [
     {
       type: mongoose.Schema.Types.ObjectId,
