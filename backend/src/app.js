@@ -45,18 +45,18 @@ app.set('view engine', 'pug')
 
 const clientPromise = mongoose.connection.asPromise().then(connection => (connection = connection.getClient()))
 
-app.use(
-  session({
-    secret: 'asdg2356gb34!!rwet5',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 15, // 15 days
-    },
-    store: MongoStore.create({ clientPromise, stringify: false }),
-  })
-)
+const sessionMiddleware = session({
+  secret: 'asdg2356gb34!!rwet5',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 24 * 15, // 15 days
+  },
+  store: MongoStore.create({ clientPromise, stringify: false }),
+})
+
+app.use(sessionMiddleware)
 
 app.use(passport.session())
 
@@ -101,10 +101,15 @@ app.createSocketServer = function (server) {
     },
   })
 
+  app.set('io', io)
+
+  io.engine.use(sessionMiddleware)
+  io.engine.use(passport.session())
+
   console.log('socket.io server created')
 
   io.on('connection', function (socket) {
-    console.log('a user connected')
+    console.log('a user connected', socket.request.user?._id.toString())
 
     socket.on('disconnect', function () {
       console.log('user disconnected')
