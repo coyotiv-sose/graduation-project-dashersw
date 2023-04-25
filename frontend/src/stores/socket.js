@@ -21,10 +21,9 @@ export const useSocketStore = defineStore('Socket', {
         this.connected = false
         console.log('disconnected')
       })
-
-      socket.on('time', (time) => {
-        this.time = time
-      })
+    },
+    joinPicnic(picnicId) {
+      socket.emit('join picnic', picnicId)
     }
   }
 })

@@ -50,7 +50,13 @@ router.put('/:picnicId/items', async function (req, res, next) {
   const user = await User.findById(req.body.user)
   const picnic = await Picnic.findById(req.params.picnicId)
 
-  await user.bringItem(req.body.name, req.body.quantity, picnic, req.body.desiredQuantity)
+  await user.bringItem(req.body.name, req.body.quantity || 1, picnic, req.body.desiredQuantity)
+
+  const io = req.app.get('io')
+
+  if (io) {
+    io.to(picnic._id.toString()).emit('someone brought an item', picnic)
+  }
 
   res.send(picnic)
 })

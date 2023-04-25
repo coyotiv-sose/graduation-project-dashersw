@@ -114,6 +114,16 @@ app.createSocketServer = function (server) {
     socket.on('disconnect', function () {
       console.log('user disconnected')
     })
+
+    socket.on('join picnic', function (picnicId) {
+      console.log(`user ${socket.request.user._id.toString()} joined picnic ${picnicId}`)
+      socket.join(picnicId)
+    })
+
+    socket.on('leave picnic', function (picnicId) {
+      console.log(`user ${socket.request.user._id.toString()} left picnic ${picnicId}`)
+      socket.leave(picnicId)
+    })
   })
 }
 

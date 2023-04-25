@@ -3,8 +3,11 @@ import axios from 'axios'
 import CounterOptionsApi from '../components/CounterOptionsApi.vue'
 import PicnicItem from '../components/PicnicItem.vue'
 import User from '../components/User.vue'
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 import { useAccountStore } from '../stores/account'
+import { useSocketStore, socket } from '../stores/socket'
+import { usePicnicStore } from '../stores/picnic'
+import { onUnmounted } from 'vue'
 
 export default {
   name: 'PicnicDetail',
@@ -13,19 +16,20 @@ export default {
     PicnicItem,
     User
   },
-  data() {
-    return {
-      picnic: null
-    }
-  },
   async created() {
-    const { data: picnic } = await axios.get(
-      `http://localhost:3000/picnics/${this.$route.params.id}`
-    )
-    this.picnic = picnic
+    await this.fetchPicnic(this.$route.params.id)
+
+    this.joinPicnic(this.picnic._id)
+  },
+  unmounted() {
+    this.leavePicnic(this.picnic._id)
   },
   computed: {
-    ...mapState(useAccountStore, ['user'])
+    ...mapState(useAccountStore, ['user']),
+    ...mapState(usePicnicStore, ['picnic'])
+  },
+  methods: {
+    ...mapActions(usePicnicStore, ['fetchPicnic', 'bringItem', 'joinPicnic', 'leavePicnic'])
   }
 }
 </script>
@@ -40,22 +44,23 @@ div(v-else)
 
   h3 at {{picnic.location}} on {{picnic.date}}
 
-  p This picnic is hosted by: {{ picnic.attendees[0].name }}
+  p This picnic is hosted by: {{ picnic.attendees?.[0].name }}
 
   p {{ picnic.description }}
 
-  p {{picnic.attendees.length}} people are attending:
+  p {{picnic.attendees?.length}} people are attending:
 
   ul
     li(v-for="attendee in picnic.attendees" :key="attendee._id")
       User(:user="attendee")
 
-  div(v-if="picnic.items.length === 0")
+  div(v-if="picnic.items?.length === 0")
     p No items have been added to this picnic yet.
   div(v-else)
     p They will bring the following items:
     ul
       li(v-for="item in picnic.items" :key="item._id")
         PicnicItem(:item="item")
+        button(@click="bringItem(picnic._id, item.name, user._id)" v-if="user") Bring
 
 </template>
