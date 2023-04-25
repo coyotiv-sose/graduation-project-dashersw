@@ -41,7 +41,8 @@
     "passport": "^0.6.0",
     "passport-local-mongoose": "^8.0.0",
     "pluralize": "^8.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "socket.io": "^4.6.1"
   },
   "jest": {
     "setupFiles": [
